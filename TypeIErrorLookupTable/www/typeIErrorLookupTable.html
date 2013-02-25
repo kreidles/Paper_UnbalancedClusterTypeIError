@@ -23,25 +23,103 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 <style type="text/css" title="currentStyle">
 	@import "./styles/demo_page.css"; @import "./styles/header.css";
 	@import "./styles/demo_table.css";
+	@import "http://www.datatables.net/examples/examples_support/themes/smoothness/jquery-ui-1.7.2.custom.css";
 </style>
-<script type="text/javascript" language="javascript" src="./js/jquery.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script type="text/javascript" language="javascript" src="./js/jquery.dataTables.js"></script>
 <script type="text/javascript" language="javascript" src="./js/tsizesWide.js"></script>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
-		$('#typeIErrorTable').dataTable({
+		var alphaTable = $('#typeIErrorTable').dataTable({
+			"bJQueryUI": true,
             "sPaginationType": "full_numbers",
+			"bFilter": true,
 			"aaData" : typeIErrorData, 
 			"aoColumns" : typeIErrorHeaders
-			
         });
+				
+		$("#rhoFilter").change(function () {
+			alphaTable.fnFilter(this.value, 0, true, true);
+		});
 	} );
 </script>
+<style>
+#typeIErrorTable_wrapper {
+	width: 950px;
+}
+</style>
 </head>
 <body>
 
+<h1>Simulated Type I Error Rates for Unbalanced Cluster Samples</h1>
+The table below shows simulated Type I error rates for several one-stage and two-stage methods
+used to analyze unbalanced cluster randomized designs.  The methods include
 
-<table id="typeIErrorTable">
+<ol>
+<li>Method 1: </li>
+
+</ol>
+
+To examine Type I error rates for your specific study design, you may filter the table using the options below.
+
+
+<!--
+		<table class="display" id="Table1" border="0" cellpadding="0" cellspacing="0">
+			<thead>
+			<tr>
+				<th>Column</th>
+				<th>Filter</th>
+			</tr>
+			</thead>
+			<tbody>
+				<tr id="filter_global">
+					<td align="center">Rendering engine</td>
+					<td id="renderingEngineFilter" align="center"><span class="filter_column filter_select"><select class="select_filter search_init"><option selected="selected" value="" class="search_init">Rendering engine</option><option value="Gecko">Gecko</option><option value="Gecko%20%28UTF-8%3A%20%24%A2%u20AC%29">Gecko (UTF-8: $¢€)</option><option value="KHTML">KHTML</option><option value="Misc">Misc</option><option value="Other%20browsers">Other browsers</option><option value="Presto">Presto</option><option value="Tasman">Tasman</option><option value="Trident">Trident</option><option value="Webkit">Webkit</option></select></span></td>
+				</tr>
+				<tr id="filter_col1">
+					<td align="center">Browser</td>
+					<td id="browserFilter" align="center"><span class="filter_column filter_text"><input class="search_init text_filter" value="Browser" type="text"></span></td>
+				</tr>
+				<tr id="filter_col2">
+					<td align="center">Platform(s)</td>
+					<td id="platformsFilter" align="center"><span class="filter_column filter_text"><input class="search_init text_filter" value="Platform(s)" type="text"></span></td>
+				</tr>
+				<tr id="filter_col3">
+					<td align="center">Engine version</td>
+					<td id="engineVersionFilter" align="center"><span class="filter_column filter_number_range">From <input value="1" class="number_range_filter" id="example_range_from_3" rel="3" type="text"> to <input value="6" class="number_range_filter" id="example_range_to_3" rel="3" type="text"></span></td>
+				</tr>
+				<tr id="filter_col4">
+					<td align="center">CSS grade</td>
+					<td id="cssGradeFilter" align="center"><span class="filter_column filter_select"><select class="search_init select_filter"><option selected="selected" value="" class="search_init">CSS grade</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select></span></td>
+				</tr>
+			</tbody>
+		</table>-->
+
+
+
+		<table cellspacing="0" cellpadding="0" border="0" class="display" ID="filters" width="600px">
+			<thead>
+			<tr>
+				<th>Column</th>
+				<th>Filter</th>
+			</tr>
+			</thead>
+			<tbody>
+				<tr id="filter_global">
+					<td align="center">Rho</td>
+					<td align="center">
+						<select name="rhoFilter" id="rhoFilter">
+							<option value=""><font color=gray>Rho</font></option>
+							<option>0.001</option>
+							<option>0.01</option>
+							<option>0.1</option>
+						</select>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+<table id="typeIErrorTable" cellpadding="5" cellspacing="0" width="100%">
 </table>
 
 
