@@ -21,106 +21,564 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 <html>
 <head>
 <style type="text/css" title="currentStyle">
-	@import "./styles/demo_page.css"; @import "./styles/header.css";
-	@import "./styles/demo_table.css";
-	@import "http://www.datatables.net/examples/examples_support/themes/smoothness/jquery-ui-1.7.2.custom.css";
+    @import "./styles/demo_page.css"; 
+    @import "./styles/demo_table.css";
+    @import "http://www.datatables.net/examples/examples_support/themes/smoothness/jquery-ui-1.7.2.custom.css";
 </style>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script type="text/javascript" language="javascript" src="./js/jquery.dataTables.js"></script>
 <script type="text/javascript" language="javascript" src="./js/tsizesWide.js"></script>
 <script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-		var alphaTable = $('#typeIErrorTable').dataTable({
-			"bJQueryUI": true,
+
+    $.fn.dataTableExt.afnFiltering.push(
+        /*
+        * Custom filtering of the table by the parameters
+        * of imbalance
+        */
+        function( oSettings, aData, iDataIndex ) {
+            var rho = document.getElementById('rhoFilter').value;
+            var m1Lower = document.getElementById('m1Lower').value * 1;
+            var m1Upper = document.getElementById('m1Upper').value * 1;
+            var m2Lower = document.getElementById('m2Lower').value * 1;
+            var m2Upper = document.getElementById('m2Upper').value * 1;
+            var nbar1Lower = document.getElementById('nbar1Lower').value * 1;
+            var nbar1Upper = document.getElementById('nbar1Upper').value * 1;
+            var nbar2Lower = document.getElementById('nbar2Lower').value * 1;
+            var nbar2Upper = document.getElementById('nbar2Upper').value * 1;
+            var r1Lower = document.getElementById('r1Lower').value * 1;
+            var r1Upper = document.getElementById('r1Upper').value * 1;
+            var r2Lower = document.getElementById('r2Lower').value * 1;
+            var r2Upper = document.getElementById('r2Upper').value * 1;
+
+            return (
+                // rho filter
+                (rho == "" || aData[0] == rho) &&
+                // m1 filter
+                (
+                    (m1Lower == "" && m1Upper == "") ||
+                    (m1Lower == "" && aData[1] <= m1Upper ) ||
+                    (m1Lower <= aData[1] && m1Upper == "" ) ||
+                    (m1Lower <= aData[1] && aData[1] <= m1Upper )
+                ) &&
+                // m2 filter
+                (
+                    (m2Lower == "" && m2Upper == "") ||
+                    (m2Lower == "" && aData[2] <= m2Upper ) ||
+                    (m2Lower <= aData[2] && m2Upper == "" ) ||
+                    (m2Lower <= aData[2] && aData[2] <= m2Upper )
+                ) &&
+                // nbar1 filter
+                (
+                    (nbar1Lower == "" && nbar1Upper == "") ||
+                    (nbar1Lower == "" && aData[3] <= nbar1Upper ) ||
+                    (nbar1Lower <= aData[3] && nbar1Upper == "" ) ||
+                    (nbar1Lower <= aData[3] && aData[3] <= nbar1Upper )
+                ) &&
+                // nbar2 filter
+                (
+                    (nbar2Lower == "" && nbar2Upper == "") ||
+                    (nbar2Lower == "" && aData[4] <= nbar2Upper ) ||
+                    (nbar2Lower <= aData[4] && nbar2Upper == "" ) ||
+                    (nbar2Lower <= aData[4] && aData[4] <= nbar2Upper )
+                ) &&
+                // r1 filter
+                (
+                    (r1Lower == "" && r1Upper == "") ||
+                    (r1Lower == "" && aData[5] <= r1Upper ) ||
+                    (r1Lower <= aData[5] && r1Upper == "" ) ||
+                    (r1Lower <= aData[5] && aData[5] <= r1Upper )
+                ) &&
+                // r2 filter
+                (
+                    (r2Lower == "" && r2Upper == "") ||
+                    (r2Lower == "" && aData[6] <= r2Upper ) ||
+                    (r2Lower <= aData[6] && r2Upper == "" ) ||
+                    (r2Lower <= aData[6] && aData[6] <= r2Upper )
+                )
+            );
+        }
+    );
+
+
+    $(document).ready(function() {
+        var alphaTable = $('#typeIErrorTable').dataTable({
+            "bJQueryUI": true,
             "sPaginationType": "full_numbers",
-			"bFilter": true,
-			"aaData" : typeIErrorData, 
-			"aoColumns" : typeIErrorHeaders
+            "bFilter": true,
+            "aaData" : typeIErrorData, 
+            "aoColumns" : typeIErrorHeaders
         });
-				
-		$("#rhoFilter").change(function () {
-			alphaTable.fnFilter(this.value, 0);
-		});
-	} );
+               
+        $("#rhoFilter").change(function () { alphaTable.fnDraw(); } );
+        $("#m1Lower").keyup(function () { alphaTable.fnDraw(); } );
+        $("#m1Upper").keyup(function () { alphaTable.fnDraw(); } );
+        $("#m2Lower").keyup(function () { alphaTable.fnDraw(); } );
+        $("#m2Upper").keyup(function () { alphaTable.fnDraw(); } );
+        $("#nbar1Lower").keyup(function () { alphaTable.fnDraw(); } );
+        $("#nbar1Upper").keyup(function () { alphaTable.fnDraw(); } );
+        $("#nbar2Lower").keyup(function () { alphaTable.fnDraw(); } );
+        $("#nbar2Upper").keyup(function () { alphaTable.fnDraw(); } );
+        $("#r1Lower").keyup(function () { alphaTable.fnDraw(); } );
+        $("#r1Upper").keyup(function () { alphaTable.fnDraw(); } );
+        $("#r2Lower").keyup(function () { alphaTable.fnDraw(); } );
+        $("#r2Upper").keyup(function () { alphaTable.fnDraw(); } );
+    } );
 </script>
 <style>
 #typeIErrorTable_wrapper {
-	width: 950px;
+    width: 950px;
 }
 </style>
 </head>
 <body>
 
 <h1>Simulated Type I Error Rates for Unbalanced Cluster Samples</h1>
-The table below shows simulated Type I error rates for several one-stage and two-stage methods
-used to analyze unbalanced cluster randomized designs.  The methods include
+This page shows simulated Type I error rates for several one-stage and two-stage methods
+used to analyze unbalanced cluster randomized designs.  
 
-<ol>
-<li>Method 1: </li>
+<ul>
+<li><a href="#lookup">Lookup Table of Type I Error Values</a></li>
+<li><a href="#methods">Summary of Statistical Methods</a></li>
+</ul>
 
-</ol>
+<h2><a name="lookup">Lookup Table of Type I Error Values</a></h2>
 
+The table below shows all scenarios used for our simulation study of Type I error rates in unbalanced cluster samples.
+Each design represents a cluster randomized trial with two treatment conditions (1 and 2).
+Experimental scenarios were defined by the following parameters of imbalance.
+<p>
+<table border="1" cellspacing="0" cellpadding="5">
+<thead>
+<tr>
+    <th>Variable</th>
+    <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>rho</td><td>the intracluster correlation</td></tr>
+<tr><td>m1</td><td>the number of clusters in treatment group 1</td></tr>
+<tr><td>m2</td><td>the number of clusters in treatment group 2</td></tr>
+<tr><td>nbar1</td><td>the average cluster size in treatment group 1</td></tr>
+<tr><td>nbar2</td><td>the average cluster size in treatment group 2</td></tr>
+<tr><td>r1</td><td>the ratio of maximum to minimum cluster size in treatment group 1</td></tr>
+<tr><td>r2</td><td>the ratio of maximum to minimum cluster size in treatment group 2</td></tr>
+</tbody>
+</table>
+</p>
 To examine Type I error rates for your specific study design, you may filter the table using the options below.
 
-
-<!--
-		<table class="display" id="Table1" border="0" cellpadding="0" cellspacing="0">
-			<thead>
-			<tr>
-				<th>Column</th>
-				<th>Filter</th>
-			</tr>
-			</thead>
-			<tbody>
-				<tr id="filter_global">
-					<td align="center">Rendering engine</td>
-					<td id="renderingEngineFilter" align="center"><span class="filter_column filter_select"><select class="select_filter search_init"><option selected="selected" value="" class="search_init">Rendering engine</option><option value="Gecko">Gecko</option><option value="Gecko%20%28UTF-8%3A%20%24%A2%u20AC%29">Gecko (UTF-8: $¢€)</option><option value="KHTML">KHTML</option><option value="Misc">Misc</option><option value="Other%20browsers">Other browsers</option><option value="Presto">Presto</option><option value="Tasman">Tasman</option><option value="Trident">Trident</option><option value="Webkit">Webkit</option></select></span></td>
-				</tr>
-				<tr id="filter_col1">
-					<td align="center">Browser</td>
-					<td id="browserFilter" align="center"><span class="filter_column filter_text"><input class="search_init text_filter" value="Browser" type="text"></span></td>
-				</tr>
-				<tr id="filter_col2">
-					<td align="center">Platform(s)</td>
-					<td id="platformsFilter" align="center"><span class="filter_column filter_text"><input class="search_init text_filter" value="Platform(s)" type="text"></span></td>
-				</tr>
-				<tr id="filter_col3">
-					<td align="center">Engine version</td>
-					<td id="engineVersionFilter" align="center"><span class="filter_column filter_number_range">From <input value="1" class="number_range_filter" id="example_range_from_3" rel="3" type="text"> to <input value="6" class="number_range_filter" id="example_range_to_3" rel="3" type="text"></span></td>
-				</tr>
-				<tr id="filter_col4">
-					<td align="center">CSS grade</td>
-					<td id="cssGradeFilter" align="center"><span class="filter_column filter_select"><select class="search_init select_filter"><option selected="selected" value="" class="search_init">CSS grade</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select></span></td>
-				</tr>
-			</tbody>
-		</table>-->
-
-
-
-		<table cellspacing="0" cellpadding="0" border="0" class="display" ID="filters" width="600px">
-			<thead>
-			<tr>
-				<th>Column</th>
-				<th>Filter</th>
-			</tr>
-			</thead>
-			<tbody>
-				<tr id="filter_global">
-					<td align="center">Rho</td>
-					<td align="center">
-						<select name="rhoFilter" id="rhoFilter">
-							<option value=""><font color=gray>Rho</font></option>
-							<option>0.001</option>
-							<option>0.01</option>
-							<option>0.1</option>
-						</select>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
+<table cellspacing="0" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <th>Column</th>
+            <th>Filter</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td align="center">Intracluster correlation (rho)</td>
+            <td align="center">
+                <select name="rhoFilter" id="rhoFilter">
+                    <option value=""><font color=gray>rho</font></option>
+                    <option>0.001</option>
+                    <option>0.01</option>
+                    <option>0.1</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">Number of clusters in treatment group 1 (m1)</td>
+            <td align="center">
+                From <input type="text" id="m1Lower"/> to <input type="text" id="m1Upper"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">Number of clusters in treatment group 2 (m2)</td>
+            <td align="center">
+                From <input type="text" id="m2Lower"/> to <input type="text" id="m2Upper"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">Average cluster size in treatment group 1 (nbar1)</td>
+            <td align="center">
+                From <input type="text" id="nbar1Lower"/> to <input type="text" id="nbar1Upper"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">Average cluster size in treatment group 2 (nbar2)</td>
+            <td align="center">
+                From <input type="text" id="nbar2Lower"/> to <input type="text" id="nbar2Upper"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">The ratio of maximum to minimum cluster size in treatment group 1 (r1)</td>
+            <td align="center">
+                From <input type="text" id="r1Lower"/> to <input type="text" id="r1Upper"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">The ratio of maximum to minimum cluster size in treatment group 2 (r2)</td>
+            <td align="center">
+                From <input type="text" id="r2Lower"/> to <input type="text" id="r2Upper"/>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>
 <table id="typeIErrorTable" cellpadding="5" cellspacing="0" width="100%">
 </table>
+</p>
+
+<h2><a name="methods">Summary of Statistical Methods</a></h2>
+
+Table 1 summarizes the different statistical methods used in the simulation.
+
+<p>
+<b>Table 1. Analytic Methods for Unbalanced Cluster Samples</b>
+<table border="1" cellspacing="0" cellpadding="5">
+<thead>
+    <tr>
+        <th><b>Method</b></th>
+        <th><b>Model</b></th>
+        <th><b>Details</b></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td>1</td>
+    <td>One-stage</td>
+    <td>Mixed model with Kenwood-Roger denominator degrees of freedom, variance constrained positive</td>
+</tr>
+<tr>
+    <td>2</td>
+    <td>One-stage</td>
+    <td>Mixed model with Kenwood-Roger denominator degrees of freedom, unconstrained variance</td>
+</tr>
+<tr>
+    <td>3</td>
+    <td>One-stage</td>
+    <td>Mixed model denominator degrees of freedom 
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <mrow>
+                <mrow><mi>m</mi><mo>-</mo><mi>g</mi></mrow>
+            </mrow>
+        </math>, variance constrained positive
+    </td>
+</tr>
+<tr>
+    <td>4</td>
+    <td>One-stage</td>
+    <td>Mixed model with denominator degrees of freedom 
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <mrow>
+                <mrow><mi>m</mi><mo>-</mo><mi>g</mi></mrow>
+            </mrow>
+        </math>, unconstrained variance
+    </td>
+</tr>
+<tr>
+    <td>5</td>
+    <td>Two-stage</td>
+    <td>General linear model with weight matrix <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mstyle mathvariant='bold'><mi>W</mi></mstyle><mo>=</mo>
+   <msub>
+    <mrow><mstyle mathvariant='bold'><mi>I</mi></mstyle>
+    </mrow>
+    <mrow><mi>m</mi>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>
+    </td>
+</tr>
+<tr>
+    <td>6</td>
+    <td>Two-stage</td>
+    <td>General linear model with weight matrix 
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mstyle mathvariant='bold'><mi>W</mi></mstyle><mo>=</mo>
+  </mrow>
+ </mrow></math>diag<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+  <mrow><mover accent='false'><munder accent='false'><mo> &sdotb; </mo>
+   <mrow><mi>h</mi><mo>=</mo><mn>1</mn>
+   </mrow></munder><mi>g</mi></mover><mover accent='false'><munder accent='false'><mo> &sdotb; </mo>
+   <mrow><mi>i</mi><mo>=</mo><mn>1</mn>
+   </mrow></munder>
+   <msub>
+    <mrow><mi>m</mi>
+    </mrow>
+    <mrow><mi>h</mi>
+    </mrow>
+   </msub></mover>
+   <msub>
+    <mrow><mi>n</mi>
+    </mrow>
+    <mrow>
+     <mrow><mi>h</mi><mi>i</mi>
+     </mrow>
+    </mrow>
+   </msub>
+  </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+ </mrow></math>
+    </td>
+</tr>
+<tr>
+    <td>7</td>
+    <td>Two-stage</td>
+    <td>General linear model with weight matrix 
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mstyle mathvariant='bold'><mi>W</mi></mstyle><mo>=</mo>
+  </mrow>
+ </mrow></math>diag<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+  <mrow><mover accent='false'><munder accent='false'><mo> &sdotb; </mo>
+   <mrow><mi>h</mi><mo>=</mo><mn>1</mn>
+   </mrow></munder><mi>g</mi></mover><mover accent='false'><munder accent='false'><mo> &sdotb; </mo>
+   <mrow><mi>i</mi><mo>=</mo><mn>1</mn>
+   </mrow></munder>
+   <msub>
+    <mrow><mi>m</mi>
+    </mrow>
+    <mrow><mi>h</mi>
+    </mrow>
+   </msub></mover><mn>1</mn><mo>/</mo>
+   <msub>
+    <mrow><mi>n</mi>
+    </mrow>
+    <mrow>
+     <mrow><mi>h</mi><mi>i</mi>
+     </mrow>
+    </mrow>
+   </msub>
+  </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+ </mrow></math>
+    </td>
+</tr>
+<tr>
+    <td>8</td>
+    <td>Two-stage</td>
+    <td>General linear model with weight matrix 
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mstyle mathvariant='bold'><mi>W</mi></mstyle><mo>=</mo>
+  </mrow>
+ </mrow></math>diag<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+  <mrow><mover accent='false'><munder accent='false'><mo> &sdotb; </mo>
+   <mrow><mi>h</mi><mo>=</mo><mn>1</mn>
+   </mrow></munder><mi>g</mi></mover><mover accent='false'><munder accent='false'><mo> &sdotb; </mo>
+   <mrow><mi>i</mi><mo>=</mo><mn>1</mn>
+   </mrow></munder>
+   <msub>
+    <mrow><mi>m</mi>
+    </mrow>
+    <mrow><mi>h</mi>
+    </mrow>
+   </msub></mover><mo form='prefix' fence='true' stretchy='true' symmetric='true'>[</mo>
+   <mrow>
+    <msub>
+     <mrow><mi>n</mi>
+     </mrow>
+     <mrow>
+      <mrow><mi>h</mi><mi>i</mi>
+      </mrow>
+     </mrow>
+    </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+    <mrow>
+     <msub>
+      <mrow><mi>n</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>h</mi><mi>i</mi>
+       </mrow>
+      </mrow>
+     </msub><mo>-</mo><mn>1</mn>
+    </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>]</mo><mo>/</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>[</mo>
+   <mrow>
+    <msub>
+     <mrow><mstyle mathvariant='bold'><mi>y</mi></mstyle>
+     </mrow>
+     <mrow>
+      <mrow><mi>h</mi><mi>i</mi>
+      </mrow>
+     </mrow>
+    </msub><mo>'</mo>
+    <msub>
+     <mrow><mstyle mathvariant='bold'><mi>y</mi></mstyle>
+     </mrow>
+     <mrow>
+      <mrow><mi>h</mi><mi>i</mi>
+      </mrow>
+     </mrow>
+    </msub><mo>-</mo>
+    <msub>
+     <mrow><mi>n</mi>
+     </mrow>
+     <mrow>
+      <mrow><mi>h</mi><mi>i</mi>
+      </mrow>
+     </mrow>
+    </msub>
+    <msub>
+     <mrow>
+      <mover>
+       <mrow><mi>y</mi>
+       </mrow><mo stretchy="true">&OverBar;</mo>
+      </mover>
+     </mrow>
+     <mrow>
+      <mrow><mn>1</mn><mo>,</mo><mi>h</mi><mi>i</mi>
+      </mrow>
+     </mrow>
+    </msub>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>]</mo>
+  </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+ </mrow></math>
+    </td>
+</tr>
+<tr>
+    <td>9</td>
+    <td>Two-stage</td>
+    <td>General linear model with weight matrix 
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mstyle mathvariant='bold'><mi>W</mi></mstyle><mo>=</mo>
+  </mrow>
+ </mrow></math>diag<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>[</mo>
+  <mrow><mover accent='false'><munder accent='false'><mo> &sdotb; </mo>
+   <mrow><mi>h</mi><mo>=</mo><mn>1</mn>
+   </mrow></munder><mi>g</mi></mover><mover accent='false'><munder accent='false'><mo> &sdotb; </mo>
+   <mrow><mi>i</mi><mo>=</mo><mn>1</mn>
+   </mrow></munder>
+   <msub>
+    <mrow><mi>m</mi>
+    </mrow>
+    <mrow><mi>h</mi>
+    </mrow>
+   </msub></mover>
+   <msup>
+    <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow>
+      <msubsup>
+       <mrow>
+        <mover>
+         <mrow><mi> &sigma; </mi>
+         </mrow><mo stretchy="true">&Hat;</mo>
+        </mover>
+       </mrow>
+       <mrow><mi>c</mi>
+       </mrow>
+       <mrow><mn>2</mn>
+       </mrow>
+      </msubsup><mo>+</mo>
+      <msubsup>
+       <mrow>
+        <mover>
+         <mrow><mi> &sigma; </mi>
+         </mrow><mo stretchy="true">&Hat;</mo>
+        </mover>
+       </mrow>
+       <mrow><mi>e</mi>
+       </mrow>
+       <mrow><mn>2</mn>
+       </mrow>
+      </msubsup><mo>/</mo>
+      <msub>
+       <mrow><mi>n</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>h</mi><mi>i</mi>
+        </mrow>
+       </mrow>
+      </msub>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msup>
+  </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>]</mo>
+ </mrow></math>, and variance constrained positive
+    </td>
+</tr>
+<tr>
+    <td>10</td>
+    <td>Two-stage</td>
+    <td>General linear model with weight matrix 
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mstyle mathvariant='bold'><mi>W</mi></mstyle><mo>=</mo>
+  </mrow>
+ </mrow></math>diag<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>[</mo>
+  <mrow><mover accent='false'><munder accent='false'><mo> &sdotb; </mo>
+   <mrow><mi>h</mi><mo>=</mo><mn>1</mn>
+   </mrow></munder><mi>g</mi></mover><mover accent='false'><munder accent='false'><mo> &sdotb; </mo>
+   <mrow><mi>i</mi><mo>=</mo><mn>1</mn>
+   </mrow></munder>
+   <msub>
+    <mrow><mi>m</mi>
+    </mrow>
+    <mrow><mi>h</mi>
+    </mrow>
+   </msub></mover>
+   <msup>
+    <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow>
+      <msubsup>
+       <mrow>
+        <mover>
+         <mrow><mi> &sigma; </mi>
+         </mrow><mo stretchy="true">&Hat;</mo>
+        </mover>
+       </mrow>
+       <mrow><mi>c</mi>
+       </mrow>
+       <mrow><mn>2</mn>
+       </mrow>
+      </msubsup><mo>+</mo>
+      <msubsup>
+       <mrow>
+        <mover>
+         <mrow><mi> &sigma; </mi>
+         </mrow><mo stretchy="true">&Hat;</mo>
+        </mover>
+       </mrow>
+       <mrow><mi>e</mi>
+       </mrow>
+       <mrow><mn>2</mn>
+       </mrow>
+      </msubsup><mo>/</mo>
+      <msub>
+       <mrow><mi>n</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>h</mi><mi>i</mi>
+        </mrow>
+       </mrow>
+      </msub>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msup>
+  </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>]</mo>
+ </mrow></math>, and unconstrained variance
+    </td>
+</tr>
+</table>
+</p>
+
+
 
 
 
