@@ -21,15 +21,20 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 <html>
 <head>
 <style type="text/css" title="currentStyle">
-    @import "./styles/demo_page.css"; 
-    @import "./styles/demo_table.css";
-    @import "http://www.datatables.net/examples/examples_support/themes/smoothness/jquery-ui-1.7.2.custom.css";
+    @import "./styles/typeIErrorTable.css"; 
 </style>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script type="text/javascript" language="javascript" src="./js/jquery.dataTables.js"></script>
 <script type="text/javascript" language="javascript" src="./js/tsizesWide.js"></script>
 <script type="text/javascript" charset="utf-8">
-
+    jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function ( oSettings, onoff ) {
+    if( typeof(onoff) == 'undefined' )
+    {
+        onoff=true;
+    }
+    this.oApi._fnProcessingDisplay( oSettings, onoff );
+    };
+    
     $.fn.dataTableExt.afnFiltering.push(
         /*
         * Custom filtering of the table by the parameters
@@ -100,28 +105,36 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     );
 
 
-    $(document).ready(function() {
+    $(document).ready(function() {   
+    
+
+    
         var alphaTable = $('#typeIErrorTable').dataTable({
             "bJQueryUI": true,
+            "bProcessing": true,
             "sPaginationType": "full_numbers",
             "bFilter": true,
             "aaData" : typeIErrorData, 
             "aoColumns" : typeIErrorHeaders
         });
-               
-        $("#rhoFilter").change(function () { alphaTable.fnDraw(); } );
-        $("#m1Lower").keyup(function () { alphaTable.fnDraw(); } );
-        $("#m1Upper").keyup(function () { alphaTable.fnDraw(); } );
-        $("#m2Lower").keyup(function () { alphaTable.fnDraw(); } );
-        $("#m2Upper").keyup(function () { alphaTable.fnDraw(); } );
-        $("#nbar1Lower").keyup(function () { alphaTable.fnDraw(); } );
-        $("#nbar1Upper").keyup(function () { alphaTable.fnDraw(); } );
-        $("#nbar2Lower").keyup(function () { alphaTable.fnDraw(); } );
-        $("#nbar2Upper").keyup(function () { alphaTable.fnDraw(); } );
-        $("#r1Lower").keyup(function () { alphaTable.fnDraw(); } );
-        $("#r1Upper").keyup(function () { alphaTable.fnDraw(); } );
-        $("#r2Lower").keyup(function () { alphaTable.fnDraw(); } );
-        $("#r2Upper").keyup(function () { alphaTable.fnDraw(); } );
+                   
+        function filterTable() {
+            alphaTable.fnDraw(); 
+        };
+        
+        $("#rhoFilter").change(function () { filterTable(); });
+        $("#m1Lower").change(function () { filterTable(); } );
+        $("#m1Upper").change(function () { filterTable(); } );
+        $("#m2Lower").change(function () { filterTable(); } );
+        $("#m2Upper").change(function () { filterTable(); } );
+        $("#nbar1Lower").change(function () { filterTable(); } );
+        $("#nbar1Upper").change(function () { filterTable(); } );
+        $("#nbar2Lower").change(function () { filterTable(); } );
+        $("#nbar2Upper").change(function () { filterTable(); } );
+        $("#r1Lower").change(function () { filterTable(); } );
+        $("#r1Upper").change(function () { filterTable(); } );
+        $("#r2Lower").change(function () { filterTable(); } );
+        $("#r2Upper").change(function () { filterTable(); } );
     } );
 </script>
 <style>
@@ -131,6 +144,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 </style>
 </head>
 <body>
+<center>
+<table id="content" ><tr><td>
 
 <h1>Simulated Type I Error Rates for Unbalanced Cluster Samples</h1>
 This page shows simulated Type I error rates for several one-stage and two-stage methods
@@ -145,29 +160,10 @@ used to analyze unbalanced cluster randomized designs.
 
 The table below shows all scenarios used for our simulation study of Type I error rates in unbalanced cluster samples.
 Each design represents a cluster randomized trial with two treatment conditions (1 and 2).
-Experimental scenarios were defined by the following parameters of imbalance.
-<p>
-<table border="1" cellspacing="0" cellpadding="5">
-<thead>
-<tr>
-    <th>Variable</th>
-    <th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr><td>rho</td><td>the intracluster correlation</td></tr>
-<tr><td>m1</td><td>the number of clusters in treatment group 1</td></tr>
-<tr><td>m2</td><td>the number of clusters in treatment group 2</td></tr>
-<tr><td>nbar1</td><td>the average cluster size in treatment group 1</td></tr>
-<tr><td>nbar2</td><td>the average cluster size in treatment group 2</td></tr>
-<tr><td>r1</td><td>the ratio of maximum to minimum cluster size in treatment group 1</td></tr>
-<tr><td>r2</td><td>the ratio of maximum to minimum cluster size in treatment group 2</td></tr>
-</tbody>
-</table>
-</p>
-To examine Type I error rates for your specific study design, you may filter the table using the options below.
-
-<table cellspacing="0" cellpadding="0" border="0">
+<p/>
+To examine Type I error rates for your specific study design, you may filter the table based on the following
+parameters of imbalance.
+<table id="filterFields" cellspacing="0" cellpadding="0" border="0">
     <thead>
         <tr>
             <th>Column</th>
@@ -224,17 +220,20 @@ To examine Type I error rates for your specific study design, you may filter the
         </tr>
     </tbody>
 </table>
-<p>
-<table id="typeIErrorTable" cellpadding="5" cellspacing="0" width="100%">
+<p></p>
+<table class="dataTable" id="typeIErrorTable" cellpadding="5" cellspacing="0" width="100%">
 </table>
-</p>
-
+<p></p>
+<p></p>
 <h2><a name="methods">Summary of Statistical Methods</a></h2>
 
-Table 1 summarizes the different statistical methods used in the simulation.
+The table below summarizes each of the ten statistical methods tested.  One-stage models are
+linear mixed models, which account for within-cluster correlation using a random intercept.
+Two-stage models first calculate the average outcome within each cluster, and the analyze
+the resulting cluster means using a general linear model.
 
 <p>
-<b>Table 1. Analytic Methods for Unbalanced Cluster Samples</b>
+<b>Analytic Methods for Unbalanced Cluster Samples</b>
 <table border="1" cellspacing="0" cellpadding="5">
 <thead>
     <tr>
@@ -578,9 +577,7 @@ Table 1 summarizes the different statistical methods used in the simulation.
 </table>
 </p>
 
-
-
-
-
+</td></tr></table>
+</center>
 </body>
 </html> 
