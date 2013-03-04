@@ -22,17 +22,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 <head>
 <style type="text/css" title="currentStyle">
     @import "./styles/typeIErrorTable.css"; 
+    @import "./styles/demo_table_jui.css";
+    @import "./styles/jquery-ui-1.7.2.custom.css";
 </style>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script type="text/javascript" language="javascript" src="./js/jquery.dataTables.js"></script>
 <script type="text/javascript" language="javascript" src="./js/tsizesWide.js"></script>
 <script type="text/javascript" charset="utf-8">
     jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function ( oSettings, onoff ) {
-    if( typeof(onoff) == 'undefined' )
-    {
-        onoff=true;
-    }
-    this.oApi._fnProcessingDisplay( oSettings, onoff );
+    	if( typeof(onoff) == 'undefined' )
+    	{
+        	onoff=true;
+    	}
+    	this.oApi._fnProcessingDisplay( oSettings, onoff );
     };
     
     $.fn.dataTableExt.afnFiltering.push(
@@ -106,35 +108,54 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
     $(document).ready(function() {   
-    
-
-    
+       
         var alphaTable = $('#typeIErrorTable').dataTable({
             "bJQueryUI": true,
-            "bProcessing": true,
+	    "bProcessing": true,
             "sPaginationType": "full_numbers",
+	    "fnPreDrawCallback":function(){
+		//alphaTable.fnProcessingIndicator();
+            },
+	    "fnDrawCallback":function(){
+		//alphaTable.fnProcessingIndicator(false);
+	    },
             "bFilter": true,
             "aaData" : typeIErrorData, 
             "aoColumns" : typeIErrorHeaders
         });
-                   
-        function filterTable() {
-            alphaTable.fnDraw(); 
-        };
+
+
         
-        $("#rhoFilter").change(function () { filterTable(); });
-        $("#m1Lower").change(function () { filterTable(); } );
-        $("#m1Upper").change(function () { filterTable(); } );
-        $("#m2Lower").change(function () { filterTable(); } );
-        $("#m2Upper").change(function () { filterTable(); } );
-        $("#nbar1Lower").change(function () { filterTable(); } );
-        $("#nbar1Upper").change(function () { filterTable(); } );
-        $("#nbar2Lower").change(function () { filterTable(); } );
-        $("#nbar2Upper").change(function () { filterTable(); } );
-        $("#r1Lower").change(function () { filterTable(); } );
-        $("#r1Upper").change(function () { filterTable(); } );
-        $("#r2Lower").change(function () { filterTable(); } );
-        $("#r2Upper").change(function () { filterTable(); } );
+        $("#rhoFilter").change(function () { alphaTable.fnDraw(); });
+        $("#m1Lower").change(function () { alphaTable.fnDraw(); } );
+        $("#m1Upper").change(function () { alphaTable.fnDraw(); } );
+        $("#m2Lower").change(function () { alphaTable.fnDraw(); } );
+        $("#m2Upper").change(function () { alphaTable.fnDraw(); } );
+        $("#nbar1Lower").change(function () { alphaTable.fnDraw(); } );
+        $("#nbar1Upper").change(function () { alphaTable.fnDraw(); } );
+        $("#nbar2Lower").change(function () { alphaTable.fnDraw(); } );
+        $("#nbar2Upper").change(function () { alphaTable.fnDraw(); } );
+        $("#r1Lower").change(function () { alphaTable.fnDraw(); } );
+        $("#r1Upper").change(function () { alphaTable.fnDraw(); } );
+        $("#r2Lower").change(function () { alphaTable.fnDraw(); } );
+        $("#r2Upper").change(function () { alphaTable.fnDraw(); } );
+
+	$("#clearFilters").click(function () {
+		$("#rhoFilter").val("rho");
+		$("#m1Lower").val("");
+        	$("#m1Upper").val("");
+        	$("#m2Lower").val("");
+        	$("#m2Upper").val("");
+        	$("#nbar1Lower").val("");
+        	$("#nbar1Upper").val("");
+        	$("#nbar2Lower").val("");
+        	$("#nbar2Upper").val("");
+        	$("#r1Lower").val("");
+        	$("#r1Upper").val("");
+        	$("#r2Lower").val("");
+        	$("#r2Upper").val("");
+		alphaTable.fnDraw();
+	});
     } );
 </script>
 <style>
@@ -218,9 +239,11 @@ parameters of imbalance.
                 From <input type="text" id="r2Lower"/> to <input type="text" id="r2Upper"/>
             </td>
         </tr>
+	<tr><td></td><td><button id="clearFilters">Clear Filters</button></td></tr>
     </tbody>
 </table>
 <p></p>
+
 <table class="dataTable" id="typeIErrorTable" cellpadding="5" cellspacing="0" width="100%">
 </table>
 <p></p>
@@ -233,7 +256,6 @@ Two-stage models first calculate the average outcome within each cluster, and th
 the resulting cluster means using a general linear model.
 
 <p>
-<b>Analytic Methods for Unbalanced Cluster Samples</b>
 <table border="1" cellspacing="0" cellpadding="5">
 <thead>
     <tr>
