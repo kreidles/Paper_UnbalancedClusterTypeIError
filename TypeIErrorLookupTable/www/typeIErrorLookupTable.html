@@ -143,17 +143,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	$("#clearFilters").click(function () {
 		$("#rhoFilter").val("rho");
 		$("#m1Lower").val("");
-        	$("#m1Upper").val("");
-        	$("#m2Lower").val("");
-        	$("#m2Upper").val("");
-        	$("#nbar1Lower").val("");
-        	$("#nbar1Upper").val("");
-        	$("#nbar2Lower").val("");
-        	$("#nbar2Upper").val("");
-        	$("#r1Lower").val("");
-        	$("#r1Upper").val("");
-        	$("#r2Lower").val("");
-        	$("#r2Upper").val("");
+        $("#m1Upper").val("");
+        $("#m2Lower").val("");
+        $("#m2Upper").val("");
+        $("#nbar1Lower").val("");
+        $("#nbar1Upper").val("");
+        $("#nbar2Lower").val("");
+        $("#nbar2Upper").val("");
+        $("#r1Lower").val("");
+        $("#r1Upper").val("");
+        $("#r2Lower").val("");
+        $("#r2Upper").val("");
 		alphaTable.fnDraw();
 	});
     } );
@@ -169,21 +169,35 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 <table id="content" ><tr><td>
 
 <h1>Simulated Type I Error Rates for Unbalanced Cluster Samples</h1>
-This page shows simulated Type I error rates for several one-stage and two-stage methods
-used to analyze unbalanced cluster randomized designs.  
 
-<ul>
-<li><a href="#lookup">Lookup Table of Type I Error Values</a></li>
-<li><a href="#methods">Summary of Statistical Methods</a></li>
-</ul>
+We performed a simulation study to 
+compare the Type I error performance of <a href="#methods">ten analytic methods</a>
+for cluster randomized designs. The analytic methods were applied to a cluster randomized 
+design with two treatment groups and one level of clustering, under several scenarios of 
+cluster size imbalance. 
+
+The lookup table below allows scientists to investigate the Type I error performance of the 
+analytic methods in scenarios which best match their intended design. 
+It is most useful for researchers who know the anticipated cluster sizes and correlation 
+for their planned study. 
 
 <h2><a name="lookup">Lookup Table of Type I Error Values</a></h2>
 
-The table below shows all scenarios used for our simulation study of Type I error rates in unbalanced cluster samples.
-Each design represents a cluster randomized trial with two treatment conditions (1 and 2).
-<p/>
-To examine Type I error rates for your specific study design, you may filter the table based on the following
-parameters of imbalance.
+The table below shows all scenarios from our simulation study of Type I error rates 
+in unbalanced cluster samples. To examine Type I error rates for your specific study design, 
+filter the table based on the parameters of imbalance listed above the table.
+<p>
+For example, if you anticipate low intracluster correlation in your study, select
+an intracluster correlation of 0.001 from the dropdown list.  If you also expect about 30 
+participants per cluster, then you would select values for nbar1 and nbar2 closest to 30.
+From the values available in the simulation study, a cluster size of 32 would be the best choice.
+You may filter by additional parameters as needed to match your planned study.
+</p>
+<p>
+Once you have filtered the results, examine the Type I error rates in the table for each method.
+Methods which have Type I error rates closest to 0.05 will provide the best Type I error control
+for your design.
+</p>
 <table id="filterFields" cellspacing="0" cellpadding="0" border="0">
     <thead>
         <tr>
@@ -206,37 +220,139 @@ parameters of imbalance.
         <tr>
             <td align="center">Number of clusters in treatment group 1 (m1)</td>
             <td align="center">
-                From <input type="text" id="m1Lower"/> to <input type="text" id="m1Upper"/>
+                From 
+                <select name="m1Lower" id="m1Lower">
+                    <option value=""><font color=gray>min</font></option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                </select>
+                to 
+                <select name="m1Upper" id="m1Upper">
+                    <option value=""><font color=gray>max</font></option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                </select>
             </td>
         </tr>
         <tr>
             <td align="center">Number of clusters in treatment group 2 (m2)</td>
             <td align="center">
-                From <input type="text" id="m2Lower"/> to <input type="text" id="m2Upper"/>
+                From 
+                <select name="m2Lower" id="m2Lower">
+                    <option value=""><font color=gray>min</font></option>
+                    <option>4</option>
+                    <option>8</option>
+                    <option>16</option>
+                </select>
+                to 
+                <select name="m2Upper" id="m2Upper">
+                    <option value=""><font color=gray>max</font></option>
+                    <option>4</option>
+                    <option>8</option>
+                    <option>16</option>
+                </select>
             </td>
         </tr>
         <tr>
             <td align="center">Average cluster size in treatment group 1 (nbar1)</td>
             <td align="center">
-                From <input type="text" id="nbar1Lower"/> to <input type="text" id="nbar1Upper"/>
+                From 
+                <select name="nbar1Lower" id="nbar1Lower">
+                    <option value=""><font color=gray>min</font></option>
+                    <option>8</option>
+                    <option>16</option>
+                    <option>32</option>
+                    <option>64</option>
+                    <option>128</option>
+                </select>
+                to
+                <select name="nbar1Upper" id="nbar1Upper">
+                    <option value=""><font color=gray>max</font></option>
+                    <option>8</option>
+                    <option>16</option>
+                    <option>32</option>
+                    <option>64</option>
+                    <option>128</option>
+                </select>
             </td>
         </tr>
         <tr>
             <td align="center">Average cluster size in treatment group 2 (nbar2)</td>
             <td align="center">
-                From <input type="text" id="nbar2Lower"/> to <input type="text" id="nbar2Upper"/>
+                From 
+                <select name="nbar2Lower" id="nbar2Lower">
+                    <option value=""><font color=gray>min</font></option>
+                    <option>8</option>
+                    <option>16</option>
+                    <option>32</option>
+                    <option>64</option>
+                    <option>128</option>
+                </select>
+                to
+                <select name="nbar2Upper" id="nbar2Upper">
+                    <option value=""><font color=gray>max</font></option>
+                    <option>8</option>
+                    <option>16</option>
+                    <option>32</option>
+                    <option>64</option>
+                    <option>128</option>
+                </select>
             </td>
         </tr>
         <tr>
             <td align="center">The ratio of maximum to minimum cluster size in treatment group 1 (r1)</td>
             <td align="center">
-                From <input type="text" id="r1Lower"/> to <input type="text" id="r1Upper"/>
+                From 
+                <select name="r1Lower" id="r1Lower">
+                    <option value=""><font color=gray>min</font></option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>4</option>
+                    <option>8</option>
+                </select>
+                to
+                <select name="r1Upper" id="r1Upper">
+                    <option value=""><font color=gray>max</font></option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>4</option>
+                    <option>8</option>
+                </select>
             </td>
         </tr>
         <tr>
             <td align="center">The ratio of maximum to minimum cluster size in treatment group 2 (r2)</td>
             <td align="center">
-                From <input type="text" id="r2Lower"/> to <input type="text" id="r2Upper"/>
+                From 
+                <select name="r2Lower" id="r2Lower">
+                    <option value=""><font color=gray>min</font></option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>4</option>
+                    <option>8</option>
+                </select>
+                to
+                <select name="r2Upper" id="r2Upper">
+                    <option value=""><font color=gray>max</font></option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>4</option>
+                    <option>8</option>
+                </select>
             </td>
         </tr>
 	<tr><td></td><td><button id="clearFilters">Clear Filters</button></td></tr>
@@ -252,8 +368,8 @@ parameters of imbalance.
 
 The table below summarizes each of the ten statistical methods tested.  One-stage models are
 linear mixed models, which account for within-cluster correlation using a random intercept.
-Two-stage models first calculate the average outcome within each cluster, and the analyze
-the resulting cluster means using a general linear model.
+Two-stage models first calculate the average outcome within each cluster, and then analyze
+the resulting cluster means using a general linear univariate model.
 
 <p>
 <table border="1" cellspacing="0" cellpadding="5">
